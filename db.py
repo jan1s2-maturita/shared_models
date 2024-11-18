@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy.types import JSON
 
 Base = declarative_base()
 
@@ -12,36 +11,10 @@ class User(Base):
     username = Column(String)
     email = Column(String)
     password = Column(String)
-
-    group_id = Column(Integer, ForeignKey('groups.id'))
-    
-    group = relationship('Group', back_populates='users')
+    is_admin = Column(Boolean)
 
     user_flags = relationship('UserFlag', back_populates='user')
 
-class GroupPermission(Base):
-    __tablename__ = 'group_permissions'
-
-    id = Column(Integer, primary_key=True)
-    group_id = Column(Integer)
-    permission_id = Column(Integer)
-
-class Permission(Base):
-    __tablename__ = 'permissions'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    description = Column(String)
-    groups = relationship('Group', secondary='group_permissions')
-
-class Group(Base):
-    __tablename__ = 'groups'
-    id = Column(Integer, primary_key=True)
-
-    name = Column(String, unique=True)
-    description = Column(String)
-    permissions = relationship('Permission', secondary='group_permissions')
-    users = relationship('User', back_populates='group')
 
 # CTF Flags
 class Flag(Base):
