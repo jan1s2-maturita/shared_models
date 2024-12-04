@@ -1,4 +1,4 @@
-from .models.db import User
+from .db import User
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from bcrypt import hashpw, gensalt
