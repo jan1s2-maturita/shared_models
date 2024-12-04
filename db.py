@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, JSON, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -41,8 +41,8 @@ class Flag(Base):
     __tablename__ = 'flags'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     flag: Mapped[str] = mapped_column(String)
-    description: Mapped[str] = mapped_column(String)
-    hint: Mapped[str] = mapped_column(String)
+    description: Optional[Mapped[str]] = mapped_column(String)
+    hint: Optional[Mapped[str]] = mapped_column(String)
     challenge = relationship('Challenge', back_populates='flags')
     users: Mapped[list["User"]] = relationship('User', back_populates='flags', secondary=user_flag_association)
     points: Mapped[int] = mapped_column(Integer)
@@ -59,7 +59,7 @@ class Challenge(Base):
     __tablename__ = 'challenges'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String)
-    description: Mapped[str] = mapped_column(String)
+    description: Optional[Mapped[str]] = mapped_column(String)
     category: Mapped[str] = mapped_column(String)
     flags: Mapped[list["Flag"]] = relationship('Flag', back_populates='challenge')
     image: Mapped["Image"] = relationship('Image', back_populates='challenge', uselist=False)
