@@ -51,7 +51,7 @@ class Image(Base):
     __tablename__ = 'images'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # k8s image manifest in JSON
-    manifest: Mapped[dict] = mapped_column(JSON)
+    manifest: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String)
     challenge: Mapped["Challenge"] = relationship('Challenge', back_populates='image', uselist=False)
 
