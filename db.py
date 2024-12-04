@@ -1,8 +1,16 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, JSON
+from typing import List
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, JSON, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from bcrypt import checkpw
 Base = declarative_base()
+
+
+user_flag_association = Table(
+    'user_flag', Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
+    Column('flag_id', Integer, ForeignKey('flags.id'), primary_key=True)
+)
 
 class User(Base):
     __tablename__ = 'users'
@@ -13,7 +21,7 @@ class User(Base):
     password: Mapped[str] = mapped_column(String)
     is_admin: Mapped[bool] = mapped_column(Boolean)
 
-    user_flags = relationship('UserFlag', back_populates='user')
+    flags = relationship('Flag', secondary=user_flag_association, back_populates='users')
     def verify_password(self, password: str) -> bool:
         return checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
     def get_is_admin(self) -> bool:
@@ -35,9 +43,9 @@ class Flag(Base):
     flag: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String)
     hint: Mapped[str] = mapped_column(String)
-    challenge_id: Mapped[int] = mapped_column(Integer, ForeignKey('challenges.id'))
     challenge = relationship('Challenge', back_populates='flags')
-    users = relationship('User', secondary='user_flags')
+    users: Mapped[list["User"]] = relationship('User', back_populates='flags', secondary=user_flag_association)
+    points: Mapped[int] = mapped_column(Integer)
 
 class Image(Base):
     __tablename__ = 'images'
@@ -45,8 +53,7 @@ class Image(Base):
     # k8s image manifest in JSON
     manifest: Mapped[dict] = mapped_column(JSON)
     description: Mapped[str] = mapped_column(String)
-    challenge_id = mapped_column(Integer, ForeignKey('challenges.id'))
-    challenge = relationship('Challenge', back_populates='image')
+    challenge: Mapped["Challenge"] = relationship('Challenge', back_populates='image', uselist=False)
 
 class Challenge(Base):
     __tablename__ = 'challenges'
@@ -54,18 +61,5 @@ class Challenge(Base):
     name: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String)
     category: Mapped[str] = mapped_column(String)
-    points: Mapped[int] = mapped_column(Integer)
     flags = relationship('Flag', back_populates='challenge')
-    image = relationship('Image', back_populates='challenge')
-    users = relationship('User', secondary='user_flags')
-# join table between completed flags and users
-class UserFlag(Base):
-    __tablename__ = 'user_flags'
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
-    flag_id: Mapped[int] = mapped_column(Integer, ForeignKey('flags.id'))
-    challenge_id: Mapped[int] = mapped_column(Integer, ForeignKey('challenges.id'))
-    user = relationship('User', back_populates='user_flags')
-    flag = relationship('Flag', back_populates='users')
-    challenge = relationship('Challenge', back_populates='users')
-
+    image: Mapped["Image"] = relationship('Image', back_populates='challenge', uselist=False)
