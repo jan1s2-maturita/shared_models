@@ -61,5 +61,5 @@ class Challenge(Base):
     name: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String)
     category: Mapped[str] = mapped_column(String)
-    flags = relationship('Flag', back_populates='challenge')
+    flags: Mapped[list["Flag"]] = relationship('Flag', back_populates='challenge')
     image: Mapped["Image"] = relationship('Image', back_populates='challenge', uselist=False)
