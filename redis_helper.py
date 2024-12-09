@@ -12,4 +12,6 @@ class RedisConnector:
         return self.connection
     def create_instance(self, user_id, image_id):
         self.connection.sadd(user_id, image_id)
+    def delete_instance(self, user_id, image_id):
+        self.connection.srem(user_id, image_id)
 

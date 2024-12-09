@@ -26,4 +26,7 @@ class Kubernetes:
         manifest = db.get_image_manifest(image_id)
         return self.v1.create_namespaced_pod(user_id, manifest)
 
+    def delete_deploy(self, user_id, image_id):
+        return self.v1.delete_namespaced_pod(image_id, namespace=user_id)
+
 
