@@ -43,6 +43,7 @@ class Flag(Base):
     flag: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String, nullable=True)
     hint: Mapped[str] = mapped_column(String, nullable=True)
+    challenge_id = mapped_column(Integer, ForeignKey('challenges.id'))
     challenge = relationship('Challenge', back_populates='flags')
     users: Mapped[list["User"]] = relationship('User', back_populates='flags', secondary=user_flag_association)
     points: Mapped[int] = mapped_column(Integer)
@@ -53,6 +54,7 @@ class Image(Base):
     # k8s image manifest in JSON
     manifest: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String)
+    challenge_id = mapped_column(Integer, ForeignKey('challenges.id'))
     challenge: Mapped["Challenge"] = relationship('Challenge', back_populates='image', uselist=False)
 
 class Challenge(Base):
