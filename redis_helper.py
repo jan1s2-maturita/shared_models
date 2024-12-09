@@ -13,6 +13,3 @@ class RedisConnector:
     def create_instance(self, user_id, image_id):
         self.connection.sadd(user_id, image_id)
 
-    def create_details(self, db, image_id):
-        flags = db.get_flags(image_id)
-        self.connection.hset(image_id, "flags", json.dumps(flags))
