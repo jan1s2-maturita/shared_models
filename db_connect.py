@@ -1,4 +1,4 @@
-from .db import User
+from .db import User, Challenge, Image
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from bcrypt import hashpw, gensalt
@@ -33,4 +33,11 @@ class Database:
         if user and user.verify_password(password):
             return user
         return None
+    def get_image_manifest(self, challenge_id):
+        session = self.get_session()
+        image: Image = session.query(Image).filter_by(challenge_id=challenge_id).first()
+        if not image:
+            return None
+        session.close()
+        return image.manifest
 

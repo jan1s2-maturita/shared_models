@@ -1,0 +1,18 @@
+import redis
+import json
+class RedisConnector:
+    def __init__(self, host, port, db, user, password):
+        self.host = host
+        self.port = port
+        self.db = db
+        self.user = user
+        self.password = password
+        self.connection = redis.Redis(host=self.host, port=self.port, db=self.db, username=self.user, password=self.password)
+    def get_connection(self):
+        return self.connection
+    def create_instance(self, user_id, image_id):
+        self.connection.sadd(user_id, image_id)
+
+    def create_details(self, db, image_id):
+        flags = db.get_flags(image_id)
+        self.connection.hset(image_id, "flags", json.dumps(flags))
