@@ -76,7 +76,7 @@ class Database:
         flags = session.query(Flag).filter_by(challenge_id=challenge_id).all()
         session.close()
         return flags
-    def add_user_flag(self, user_id, flag_id):
+    def submit_user_flag(self, user_id, flag_id):
         session = self.get_session()
         user = session.query(User).filter_by(id=user_id).first()
         if not user:
