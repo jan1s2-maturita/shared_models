@@ -1,4 +1,4 @@
-from .db import User, Challenge, Image
+from .db import User, Challenge, Image, Flag
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from bcrypt import hashpw, gensalt
@@ -7,6 +7,12 @@ class Database:
     def __init__(self, host, port, user, password, db_name):
         self.engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db_name}')
         self.Session = sessionmaker(bind=self.engine)
+        self.init_db()
+    def init_db(self):
+        Flag.metadata.create_all(self.engine)
+        User.metadata.create_all(self.engine)
+        Challenge.metadata.create_all(self.engine)
+        Image.metadata.create_all(self.engine)
 
     def get_session(self):
         return self.Session()
