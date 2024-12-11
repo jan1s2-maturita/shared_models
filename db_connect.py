@@ -46,4 +46,76 @@ class Database:
             return None
         session.close()
         return image.manifest
+    def add_challenge(self, name, description, category):
+        session = self.get_session()
+        challenge = Challenge(name=name, description=description, category=category)
+        session.add(challenge)
+        session.commit()
+        session.close()
+        return challenge
+    def add_image(self, challenge_id, manifest):
+        session = self.get_session()
+        image = Image(challenge_id=challenge_id, manifest=manifest)
+        session.add(image)
+        session.commit()
+        session.close()
+        return image
+    def add_flag(self, flag, challenge_id, points):
+        session = self.get_session()
+        flag = Flag(flag=flag, challenge_id=challenge_id, points=points)
+        session.add(flag)
+        session.commit()
+        session.close()
+        return flag
+    def get_challenge_by_id(self, challenge_id):
+        session = self.get_session()
+        challenge = session.query(Challenge).filter_by(id=challenge_id).first()
+        session.close()
+        return challenge
+    def get_challenges(self):
+        session = self.get_session()
+        challenges = session.query(Challenge).all()
+        session.close()
+        return challenges
+    def get_flags(self, challenge_id):
+        session = self.get_session()
+        flags = session.query(Flag).filter_by(challenge_id=challenge_id).all()
+        session.close()
+        return flags
+    def submit_user_flag(self, user_id, flag_id):
+        session = self.get_session()
+        user = session.query(User).filter_by(id=user_id).first()
+        if not user:
+            session.close()
+            return None
+        flag = session.query(Flag).filter_by(id=flag_id).first()
+        user.flags.append(flag)
+        session.commit()
+        session.close()
+        return user
+    def get_user_flags(self, user_id):
+        session = self.get_session()
+        user = session.query(User).filter_by(id=user_id).first()
+        if not user:
+            session.close()
+            return None
+        flags = user.flags
+        session.close()
+        return flags
+    def get_flag_by_id(self, flag_id):
+        session = self.get_session()
+        flag = session.query(Flag).filter_by(id=flag_id).first()
+        session.close()
+        return flag
+    def set_admin(self, user_id, admin):
+        session = self.get_session()
+        user = session.query(User).filter_by(id=user_id).first()
+        if not user:
+            session.close()
+            return None
+        user.is_admin = admin
+        session.commit()
+        session.close()
+        return user
+
 
