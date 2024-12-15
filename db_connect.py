@@ -1,7 +1,6 @@
 from .db import User, Challenge, Image, Flag, Service
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from bcrypt import hashpw, gensalt
 # database connection class - postgres
 class Database:
     def __init__(self, host, port, user, password, db_name):
@@ -23,6 +22,7 @@ class Database:
         session.close()
         return user
     def add_user(self, username, password, email):
+        from bcrypt import hashpw, gensalt
         session = self.get_session()
         user = User(username=username, password=hashpw(password.encode('utf-8'), gensalt()), email=email)
         session.add(user)
