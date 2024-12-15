@@ -48,6 +48,13 @@ class Flag(Base):
     users: Mapped[list["User"]] = relationship('User', back_populates='flags', secondary=user_flag_association)
     points: Mapped[int] = mapped_column(Integer)
 
+class Service(Base):
+    __tablename__ = 'services'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    manifest: Mapped[str] = mapped_column(String)
+    image_id = mapped_column(Integer, ForeignKey('images.id'))
+    image: Mapped["Image"] = relationship('Image', back_populates='service', uselist=False)
+
 class Image(Base):
     __tablename__ = 'images'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -56,6 +63,7 @@ class Image(Base):
     description: Mapped[str] = mapped_column(String)
     challenge_id = mapped_column(Integer, ForeignKey('challenges.id'))
     challenge: Mapped["Challenge"] = relationship('Challenge', back_populates='image', uselist=False)
+    service: Mapped["Service"] = relationship('Service', back_populates='image', uselist=False)
 
 class Challenge(Base):
     __tablename__ = 'challenges'
