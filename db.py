@@ -2,7 +2,6 @@ from typing import List, Optional
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, JSON, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from bcrypt import checkpw
 Base = declarative_base()
 
 
@@ -23,6 +22,7 @@ class User(Base):
 
     flags = relationship('Flag', secondary=user_flag_association, back_populates='users')
     def verify_password(self, password: str) -> bool:
+        from bcrypt import checkpw
         return checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
     def get_is_admin(self) -> bool:
         return self.is_admin
