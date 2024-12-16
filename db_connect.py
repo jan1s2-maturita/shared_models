@@ -47,14 +47,14 @@ class Database:
             return None
         session.close()
         return image.manifest
-    def get_image_services(self, challenge_id):
+    def get_service_manifest(self, challenge_id):
         session = self.get_session()
         image: Image = session.query(Image).filter_by(challenge_id=challenge_id).first()
         if not image:
             return None
         service = image.service
         session.close()
-        return service
+        return service.manifest
 
     def add_challenge(self, name, description, category):
         session = self.get_session()
