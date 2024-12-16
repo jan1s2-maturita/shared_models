@@ -34,9 +34,11 @@ class Kubernetes:
         response = []
         if manifest:
             json_manifest = json.loads(manifest)
+            json_manifest['metadata']['name'] = challenge_id
             response.append(create_from_dict(self.client, json_manifest, namespace=user_id))
         if manifest_service:
             json_manifest_service = json.loads(manifest_service)
+            json_manifest_service['metadata']['name'] = challenge_id
             response.append(create_from_dict(self.client, json_manifest_service, namespace=user_id))
         return response
 
