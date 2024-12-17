@@ -1,7 +1,6 @@
-from .db import User, Challenge, Image, Flag
+from .db import User, Challenge, Image, Flag, Service
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from bcrypt import hashpw, gensalt
 # database connection class - postgres
 class Database:
     def __init__(self, host, port, user, password, db_name):
@@ -13,6 +12,7 @@ class Database:
         User.metadata.create_all(self.engine)
         Challenge.metadata.create_all(self.engine)
         Image.metadata.create_all(self.engine)
+        Service.metadata.create_all(self.engine)
 
     def get_session(self):
         return self.Session()
@@ -22,6 +22,7 @@ class Database:
         session.close()
         return user
     def add_user(self, username, password, email):
+        from bcrypt import hashpw, gensalt
         session = self.get_session()
         user = User(username=username, password=hashpw(password.encode('utf-8'), gensalt()), email=email)
         session.add(user)
@@ -46,6 +47,15 @@ class Database:
             return None
         session.close()
         return image.manifest
+    def get_service_manifest(self, challenge_id):
+        session = self.get_session()
+        image: Image = session.query(Image).filter_by(challenge_id=challenge_id).first()
+        if not image:
+            return None
+        service = image.service
+        session.close()
+        return service.manifest
+
     def add_challenge(self, name, description, category):
         session = self.get_session()
         challenge = Challenge(name=name, description=description, category=category)
