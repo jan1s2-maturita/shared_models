@@ -24,7 +24,7 @@ class Database:
     def add_user(self, username, password, email):
         from bcrypt import hashpw, gensalt
         session = self.get_session()
-        user = User(username=username, password=hashpw(password.encode('utf-8'), gensalt()), email=email)
+        user = User(username=username, password=hashpw(password.encode('utf-8'), gensalt()), email=email, is_admin=False)
         session.add(user)
         session.commit()
         session.close()
