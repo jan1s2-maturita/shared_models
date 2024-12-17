@@ -23,7 +23,7 @@ class User(Base):
     flags = relationship('Flag', secondary=user_flag_association, back_populates='users')
     def verify_password(self, password: str) -> bool:
         from bcrypt import checkpw
-        return checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
+        return checkpw(password.encode('utf-8'), self.password)
     def get_is_admin(self) -> bool:
         return self.is_admin
     def get_id(self) -> int:
