@@ -25,7 +25,7 @@ class User(Base):
         from bcrypt import checkpw
         print(password)
         print(self.password)
-        return checkpw(password.encode('utf-8'), self.password)
+        return checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
     def get_is_admin(self) -> bool:
         return self.is_admin
     def get_id(self) -> int:
