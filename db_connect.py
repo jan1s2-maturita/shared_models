@@ -53,6 +53,11 @@ class Database:
         session.commit()
         session.close()
         return challenge
+    def list_challenges(self):
+        session = self.get_session()
+        challenges = session.query(Challenge).all()
+        session.close()
+        return challenges
     def add_image(self, challenge_id, manifest):
         session = self.get_session()
         image = Image(challenge_id=challenge_id, manifest=manifest)
