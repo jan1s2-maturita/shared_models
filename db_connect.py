@@ -24,7 +24,7 @@ class Database:
     def add_user(self, username, password, email):
         from bcrypt import hashpw, gensalt
         session = self.get_session()
-        user = User(username=username, password=hashpw(password.encode('utf-8'), gensalt()), email=email)
+        user = User(username=username, password=hashpw(password.encode('utf-8'), gensalt()).decode('utf-8'), email=email, is_admin=False)
         session.add(user)
         session.commit()
         session.close()
@@ -47,14 +47,14 @@ class Database:
             return None
         session.close()
         return image.manifest
-    def get_image_services(self, challenge_id):
+    def get_service_manifest(self, challenge_id):
         session = self.get_session()
         image: Image = session.query(Image).filter_by(challenge_id=challenge_id).first()
         if not image:
             return None
         service = image.service
         session.close()
-        return service
+        return service.manifest
 
     def add_challenge(self, name, description, category):
         session = self.get_session()
@@ -63,6 +63,11 @@ class Database:
         session.commit()
         session.close()
         return challenge
+    def list_challenges(self):
+        session = self.get_session()
+        challenges = session.query(Challenge).all()
+        session.close()
+        return challenges
     def add_image(self, challenge_id, manifest):
         session = self.get_session()
         image = Image(challenge_id=challenge_id, manifest=manifest)
