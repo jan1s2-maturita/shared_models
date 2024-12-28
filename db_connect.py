@@ -75,6 +75,12 @@ class Database:
         session.commit()
         session.close()
         return image
+    def add_service(self, image_id, manifest):
+        session = self.get_session()
+        service = Service(image_id=image_id, manifest=manifest)
+        session.add(service)
+        session.commit()
+        session.close()
     def add_flag(self, flag, challenge_id, points):
         session = self.get_session()
         flag = Flag(flag=flag, challenge_id=challenge_id, points=points)
