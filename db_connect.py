@@ -21,10 +21,12 @@ class Database:
         user = session.query(User).filter_by(id=user_id).first()
         session.close()
         return user
-    def add_user(self, username, password, email):
+    def hash_password(self, password):
         from bcrypt import hashpw, gensalt
+        return hashpw(password.encode('utf-8'), gensalt()).decode('utf-8')
+    def add_user(self, username, password, email):
         session = self.get_session()
-        user = User(username=username, password=hashpw(password.encode('utf-8'), gensalt()).decode('utf-8'), email=email, is_admin=False)
+        user = User(username=username, password=self.hash_password(password), email=email, is_admin=False)
         session.add(user)
         session.commit()
         session.close()
@@ -145,5 +147,16 @@ class Database:
         session.commit()
         session.close()
         return user
-
-
+    def update_user(self, user_id, password, is_admin):
+        session = self.get_session()
+        user = session.query(User).filter_by(id=user_id).first()
+        if not user:
+            session.close()
+            return None
+        if password:
+            user.password = self.hash_password(password)
+        if is_admin:
+            user.is_admin = is_admin
+        session.commit()
+        session.close()
+        return user
