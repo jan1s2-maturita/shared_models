@@ -45,5 +45,11 @@ class Kubernetes:
     def delete_deploy(self, user_id, challenge_id):
         self.v1.delete_namespaced_service(challenge_id, namespace=user_id)
         return self.v1.delete_namespaced_pod(challenge_id, namespace=user_id)
+    # access box name is "accessbox_user_id" in namespace user_id
+    def execute_command(self, user_id, command):
+        return self.v1.connect_get_namespaced_pod_exec("accessbox", user_id, command=command, stderr=True, stdin=False, stdout=True, tty=False)
+    def create_accessbox(self, user_id):
+        body = client.V1Pod(metadata=client.V1ObjectMeta(name="accessbox"), spec=client.V1PodSpec(containers=[client.V1Container(name="accessbox", image="kalilinux/kali-last-release:latest", command=["sleep", "7200"])]))
+        return self.v1.create_namespaced_pod(namespace=user_id, body=body)
 
 
