@@ -47,7 +47,17 @@ class Kubernetes:
         return self.v1.delete_namespaced_pod(challenge_id, namespace=user_id)
     # access box name is "accessbox_user_id" in namespace user_id
     def execute_command(self, user_id, command):
-        return self.v1.connect_get_namespaced_pod_exec("accessbox", user_id, command=command, stderr=True, stdin=False, stdout=True, tty=False)
+        try:
+            self.v1.connect_get_namespaced_pod_exec("accessbox", user_id, command=command, stderr=True, stdin=False, stdout=True, tty=False)
+            return True
+        except Exception as e:
+            return False
+    def get_logs(self, user_id):
+        try:
+            data = self.v1.read_namespaced_pod_log("accessbox", user_id)
+            return data
+        except Exception as e:
+            return None
     def create_accessbox(self, user_id):
         if not self.namespace_exists(user_id):
             self.create_namespace(user_id)
