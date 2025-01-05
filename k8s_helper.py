@@ -17,10 +17,12 @@ class Kubernetes:
         return self.v1
     def create_namespace(self, name: str):
         body = client.V1Namespace(metadata=client.V1ObjectMeta(name=name))
+        print(body)
         return self.v1.create_namespace(body)
 
     def namespace_exists(self, name: str):
         namespaces = self.v1.list_namespace()
+        print(namespaces)
         for ns in namespaces.items:
             if ns.metadata.name == name:
                 return True
