@@ -10,6 +10,7 @@ class Kubernetes:
         self.configuration.api_key['authorization'] = key
         self.configuration.api_key_prefix['authorization'] = 'Bearer'
         self.configuration.host = url
+        self.configuration.debug = True
         self.configuration.verify_ssl = False
         self.client = client.ApiClient(self.configuration)
         self.v1 = client.CoreV1Api(self.client)
