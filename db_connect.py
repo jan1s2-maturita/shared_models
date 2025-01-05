@@ -75,7 +75,7 @@ class Database:
         return challenges
     def add_image(self, challenge_id, manifest):
         session = self.get_session()
-        image = Image(challenge_id=challenge_id, manifest=manifest)
+        image = Image(challenge_id=challenge_id, manifest=manifest, description="")
         session.add(image)
         session.flush()
         session.refresh(image)
