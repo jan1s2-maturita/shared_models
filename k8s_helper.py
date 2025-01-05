@@ -18,12 +18,10 @@ class Kubernetes:
         return self.v1
     def create_namespace(self, name: str):
         body = client.V1Namespace(metadata=client.V1ObjectMeta(name=name))
-        print(body)
         return self.v1.create_namespace(body)
 
     def namespace_exists(self, name: str):
         namespaces = self.v1.list_namespace()
-        print(namespaces)
         for ns in namespaces.items:
             if ns.metadata.name == name:
                 return True
@@ -36,11 +34,14 @@ class Kubernetes:
         manifest_service = db.get_service_manifest(challenge_id)
         response = []
         if manifest:
+            print(manifest)
             json_manifest = json.loads(manifest)
+            print(json_manifest)
             json_manifest['metadata']['name'] = challenge_id
             response.append(create_from_dict(self.client, json_manifest, namespace=user_id))
         if manifest_service:
             json_manifest_service = json.loads(manifest_service)
+            print(json_manifest_service)
             json_manifest_service['metadata']['name'] = challenge_id
             response.append(create_from_dict(self.client, json_manifest_service, namespace=user_id))
         return response
