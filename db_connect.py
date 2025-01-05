@@ -62,6 +62,8 @@ class Database:
         session = self.get_session()
         challenge = Challenge(name=name, description=description, category=category)
         session.add(challenge)
+        session.flush()
+        session.refresh(challenge)
         id = challenge.id
         session.commit()
         session.close()
@@ -75,6 +77,8 @@ class Database:
         session = self.get_session()
         image = Image(challenge_id=challenge_id, manifest=manifest)
         session.add(image)
+        session.flush()
+        session.refresh(image)
         id = image.id
         session.commit()
         session.close()
@@ -89,6 +93,8 @@ class Database:
         session = self.get_session()
         flag_obj = Flag(flag=flag, challenge_id=challenge_id, points=points)
         session.add(flag_obj)
+        session.flush()
+        session.refresh(flag_obj)
         id = flag_obj.id
         session.commit()
         session.close()
