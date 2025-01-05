@@ -27,8 +27,8 @@ class Kubernetes:
         return False
 
     def create_in_k8s(self, db: Database, user_id, challenge_id):
-        if not self.namespace_exists(user_id):
-            self.create_namespace(user_id)
+        if not self.namespace_exists(str(user_id)):
+            self.create_namespace(str(user_id))
         manifest = db.get_image_manifest(challenge_id)
         manifest_service = db.get_service_manifest(challenge_id)
         response = []
