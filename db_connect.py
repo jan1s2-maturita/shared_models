@@ -64,7 +64,7 @@ class Database:
         session.add(challenge)
         session.commit()
         session.close()
-        return challenge
+        return challenge.__dict__
     def list_challenges(self):
         session = self.get_session()
         challenges = session.query(Challenge).all()
@@ -76,7 +76,7 @@ class Database:
         session.add(image)
         session.commit()
         session.close()
-        return image
+        return image.__dict__
     def add_service(self, image_id, manifest):
         session = self.get_session()
         service = Service(image_id=image_id, manifest=manifest)
@@ -103,8 +103,9 @@ class Database:
     def get_flags(self, challenge_id):
         session = self.get_session()
         flags = session.query(Flag).filter_by(challenge_id=challenge_id).all()
+        res = [i.__dict__ for i in flags]
         session.close()
-        return flags
+        return res
     def submit_user_flag(self, user_id, flag_id, submitted_flag):
         session = self.get_session()
         user = session.query(User).filter_by(id=user_id).first()
