@@ -74,8 +74,10 @@ class Kubernetes:
         if not self.namespace_exists(self.get_user_namespace(user_id)):
             self.create_namespace(self.get_user_namespace(user_id))
         # sh -c "touch /tmp/output.txt && tail -f /tmp/output.txt"
-        body = client.V1Pod(metadata=client.V1ObjectMeta(name="accessbox"), spec=client.V1PodSpec(containers=[client.V1Container(name="accessbox", image="kalilinux/kali-last-release:latest", command=["sh", "-c", "touch /tmp/output.txt && tail -f /tmp/output.txt"])]))
+        body = client.V1Pod(metadata=client.V1ObjectMeta(name="accessbox"), spec=client.V1PodSpec(containers=[client.V1Container(name="accessbox", image="kalilinux/kali-last-release:latest", command=["sh", "-c", "echo 'Logging started' >> /tmp/output.txt && tail -f /tmp/output.txt"])]))
         print(body)
         return self.v1.create_namespaced_pod(namespace=self.get_user_namespace(user_id), body=body)
+    def delete_accessbox(self, user_id):
+        return self.v1.delete_namespaced_pod("accessbox", namespace=self.get_user_namespace(user_id))
 
 
