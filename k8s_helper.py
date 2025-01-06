@@ -68,6 +68,7 @@ class Kubernetes:
             data = self.v1.read_namespaced_pod_log("accessbox", self.get_user_namespace(user_id))
             return data
         except Exception as e:
+            print(e)
             return None
     def create_accessbox(self, user_id):
         if not self.namespace_exists(self.get_user_namespace(user_id)):
