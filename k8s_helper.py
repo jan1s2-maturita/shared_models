@@ -75,6 +75,6 @@ class Kubernetes:
         # sh -c "touch /tmp/output.txt && tail -f /tmp/output.txt"
         body = client.V1Pod(metadata=client.V1ObjectMeta(name="accessbox"), spec=client.V1PodSpec(containers=[client.V1Container(name="accessbox", image="kalilinux/kali-last-release:latest", command=["sh", "-c", "touch /tmp/output.txt && tail -f /tmp/output.txt"])]))
         print(body)
-        return self.v1.create_namespaced_pod(namespace=user_id, body=body)
+        return self.v1.create_namespaced_pod(namespace=self.get_user_namespace(user_id), body=body)
 
 
