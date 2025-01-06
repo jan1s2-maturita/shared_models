@@ -46,15 +46,15 @@ class Kubernetes:
         if manifest_service:
             json_manifest_service = json.loads(manifest_service)
             print(json_manifest_service)
-            json_manifest_service['metadata']['name'] = f"ctf-{challenge_id}
+            json_manifest_service['metadata']['name'] = f"ctf-{challenge_id}"
             response.append(create_from_dict(self.client, json_manifest_service, namespace=self.get_user_namespace(user_id)))
         return response
 
     def delete_deploy(self, user_id, challenge_id):
         try:
-            self.v1.delete_namespaced_service(str(challenge_id), namespace=self.get_user_namespace(user_id))
+            self.v1.delete_namespaced_service(f"ctf-{challenge_id}", namespace=self.get_user_namespace(user_id))
         finally:
-            return self.v1.delete_namespaced_pod(str(challenge_id), namespace=self.get_user_namespace(user_id))
+            return self.v1.delete_namespaced_pod(f"ctf-{challenge_id}", namespace=self.get_user_namespace(user_id))
     # access box name is "accessbox_user_id" in namespace user_id
     def execute_command(self, user_id, command):
         try:
