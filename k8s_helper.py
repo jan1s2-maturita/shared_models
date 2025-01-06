@@ -57,6 +57,7 @@ class Kubernetes:
             return self.v1.delete_namespaced_pod(f"ctf-{challenge_id}", namespace=self.get_user_namespace(user_id))
     # access box name is "accessbox_user_id" in namespace user_id
     def execute_command(self, user_id, command):
+        command = f"{command} > /tmp/output.txt 2>&1"
         try:
             self.v1.connect_get_namespaced_pod_exec("accessbox", self.get_user_namespace(user_id), command=command, stderr=True, stdin=False, stdout=True, tty=False)
             return True
@@ -71,7 +72,9 @@ class Kubernetes:
     def create_accessbox(self, user_id):
         if not self.namespace_exists(self.get_user_namespace(user_id)):
             self.create_namespace(self.get_user_namespace(user_id))
-        body = client.V1Pod(metadata=client.V1ObjectMeta(name="accessbox"), spec=client.V1PodSpec(containers=[client.V1Container(name="accessbox", image="kalilinux/kali-last-release:latest", command=["sleep", "7200"])]))
+        # sh -c "touch /tmp/output.txt && tail -f /tmp/output.txt"
+        body = client.V1Pod(metadata=client.V1ObjectMeta(name="accessbox"), spec=client.V1PodSpec(containers=[client.V1Container(name="accessbox", image="kalilinux/kali-last-release:latest", command=["sh", "-c", "touch /tmp/output.txt && tail -f /tmp/output.txt"])]))
+        print(body)
         return self.v1.create_namespaced_pod(namespace=user_id, body=body)
 
 
