@@ -1,6 +1,7 @@
 from kubernetes import client, config
 from kubernetes.utils import create_from_dict
 import json
+from kubernetes.stream import stream
 
 from .db_connect import Database
 
@@ -60,11 +61,21 @@ class Kubernetes:
         # command = ["sh", "-c", f"'{command} >> /tmp/output.txt 2>&1'"]
         # command_new = ["sh" "-c", f"'{command} >> /tmp/output.txt 2>&1'"]
         command_new = [
+                "sh",
+                "-c",
                 f"{command} >> /tmp/output.txt 2>&1"
                 ]
 
         try:
-            self.v1.connect_get_namespaced_pod_exec("accessbox", self.get_user_namespace(user_id), command=command_new, stderr=True, stdin=False, stdout=True, tty=False)
+            # self.v1.connect_get_namespaced_pod_exec("accessbox", self.get_user_namespace(user_id), command=command_new, stderr=True, stdin=False, stdout=True, tty=False)
+            stream(self.v1.connect_get_namespaced_pod_exec, 
+                   "accessbox", 
+                   self.get_user_namespace(user_id), 
+                   command=command_new, 
+                   stderr=True, 
+                   stdin=False, 
+                   stdout=True, 
+                   tty=False)
             return True
         except Exception as e:
             return False
