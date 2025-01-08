@@ -58,9 +58,9 @@ class Kubernetes:
     # access box name is "accessbox_user_id" in namespace user_id
     def execute_command(self, user_id, command):
         # command = ["sh", "-c", f"'{command} >> /tmp/output.txt 2>&1'"]
-        command = f"sh -c '{command} >> /tmp/output.txt 2>&1'"
+        command_new = ["sh" "-c", f"'{command} >> /tmp/output.txt 2>&1'"]
         try:
-            self.v1.connect_get_namespaced_pod_exec("accessbox", self.get_user_namespace(user_id), command=command, stderr=True, stdin=False, stdout=True, tty=False)
+            self.v1.connect_get_namespaced_pod_exec("accessbox", self.get_user_namespace(user_id), command=command_new, stderr=True, stdin=False, stdout=True, tty=False)
             return True
         except Exception as e:
             return False
