@@ -114,22 +114,29 @@ class Database:
         flags = session.query(Flag).filter_by(challenge_id=challenge_id).all()
         res = [i.__dict__ for i in flags]
         session.close()
+<<<<<<< HEAD
         return res
     def submit_user_flag(self, user_id, flag_id, submitted_flag):
+=======
+        return flags
+    def submit_user_flag(self, user_id, challenge_id, submitted_flag):
+>>>>>>> 35afaaa (update)
         session = self.get_session()
         user = session.query(User).filter_by(id=user_id).first()
         if not user:
             session.close()
             return None
-        flag = session.query(Flag).filter_by(id=flag_id).first()
-        if not flag:
+        flags = session.query(Flag).filter_by(challenge_id=challenge_id).all()
+        # flag = session.query(Flag).filter_by(id=flag_id).first()
+        if not flags:
             session.close()
             return None
-        if flag.flag == submitted_flag:
-            user.flags.append(flag)
-            session.commit()
-            session.close()
-            return user
+        for flag in flags:
+            if flag.flag == submitted_flag:
+                user.flags.append(flag)
+                session.commit()
+                session.close()
+                return user
         session.close()
         return None
 
